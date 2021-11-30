@@ -81,7 +81,7 @@ public class DaoCategoria {
         boolean state = false;
         try{
             con = ConnectionMysql.getConnection();
-            String query = "delete from categoria where  = id ?;";
+            String query = "delete from categoria where id = ?;";
             pstm = con.prepareStatement(query);
             pstm.setString(1, id);
             state = pstm.executeUpdate() == 1;

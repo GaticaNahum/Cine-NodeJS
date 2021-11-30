@@ -65,6 +65,55 @@ public class DaoPelicula {
     }
 
 
+
+    public boolean insertPeli(Pelicula pelicula, boolean insert){
+        boolean state = false;
+        try{
+            con = ConnectionMysql.getConnection();
+            if(insert){
+                String query = "INSERT INTO pelicula(titulo, descripcion, sinopsis, rating, categoria) values(?,?,?,?,?);";
+                pstm = con.prepareStatement(query);
+                pstm.setString(1, pelicula.getTitulo());
+                pstm.setString(2, pelicula.getDescripcion());
+                pstm.setString(3, pelicula.getSinopsis());
+                pstm.setInt(4, pelicula.getRating());
+                pstm.setInt(5, pelicula.getCategoria());
+            }else{
+                String query = "UPDATE pelicula SET titulo = ?,descripcion = ?, sinopsis = ?, rating = ?, categoria = ? WHERE id = ?;";
+                pstm = con.prepareStatement(query);
+                pstm.setString(6, pelicula.getId());
+                pstm.setString(1, pelicula.getTitulo());
+                pstm.setString(2, pelicula.getDescripcion());
+                pstm.setString(3, pelicula.getSinopsis());
+                pstm.setInt(4, pelicula.getRating());
+                pstm.setInt(5, pelicula.getCategoria());
+            }
+            state = pstm.executeUpdate() == 1;
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }finally{
+            closeConnection();
+        }
+        return state;
+    }
+
+    public boolean deletePeli(String id){
+        boolean state = false;
+        try{
+            con = ConnectionMysql.getConnection();
+            String query = "delete from pelicula where id = ?;";
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, id);
+            state = pstm.executeUpdate() == 1;
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }finally{
+            closeConnection();
+        }
+        return state;
+    }
+
+
     public void closeConnection(){
         try{
             if(con != null){

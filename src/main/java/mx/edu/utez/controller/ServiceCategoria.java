@@ -15,14 +15,14 @@ public class ServiceCategoria {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Categoria> getCategories(){
         return new DaoCategoria().findAll();
-    }
+    } //Listo
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Categoria getCategories(@PathParam("id") String id){
         return new DaoCategoria().findById(id);
-    }
+    } //Listo
 
     @POST
     @Path("/save")
@@ -45,7 +45,7 @@ public class ServiceCategoria {
         return null;
     }
 
-    @POST
+    @DELETE
     @Path("/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public boolean delete(@PathParam("id") String id){

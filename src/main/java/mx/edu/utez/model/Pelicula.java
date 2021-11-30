@@ -43,6 +43,10 @@ public class Pelicula {
         this.categoria = categoria;
     }
 
+    public Pelicula(String id, String titulo, String descripcion, String sinopsis, String rating, String categoria) {
+    }
+
+
     public String getId() {
         return id;
     }
