@@ -21,7 +21,7 @@ public class DaoCategoria {
             rs = statement.executeQuery(query);
             while (rs.next()) {
                 Categoria categoria = new Categoria();
-                categoria.setId(rs.getString("id"));
+                categoria.setId(rs.getInt("id"));
                 categoria.setNombre(rs.getString("nombre"));
                 customers.add(categoria);
             }
@@ -33,16 +33,16 @@ public class DaoCategoria {
         return customers;
     }
 
-    public Categoria findById(String id) {
+    public Categoria findById(int id) {
         Categoria categoria = new Categoria();
         try {
             con = ConnectionMysql.getConnection();
             String query = "SELECT id,nombre FROM categoria WHERE id = ?";
             pstm = con.prepareStatement(query);
-            pstm.setString(1, id);
+            pstm.setInt(1, id);
             rs = pstm.executeQuery();
             if (rs.next()) {
-                categoria.setId(rs.getString("id"));
+                categoria.setId(rs.getInt("id"));
                 categoria.setNombre(rs.getString("nombre"));
             }
         } catch (SQLException ex) {
@@ -54,7 +54,7 @@ public class DaoCategoria {
     }
 
 
-    public boolean insertCategory(Categoria categoria, boolean insert){
+    public boolean insertCategory( boolean insert, Categoria categoria,int id){
         boolean state = false;
         try{
             con = ConnectionMysql.getConnection();
@@ -62,10 +62,12 @@ public class DaoCategoria {
                 String query = "INSERT INTO categoria(nombre) values(?);";
                 pstm = con.prepareStatement(query);
                 pstm.setString(1, categoria.getNombre());
+
             }else{
-                String query = "UPDATE categoria SET nombre = ? WHERE categoria = ?;";
+                String query = "UPDATE categoria SET nombre = ? WHERE id = ?;";
                 pstm = con.prepareStatement(query);
                 pstm.setString(1, categoria.getNombre());
+                pstm.setInt(2,id);
             }
             state = pstm.executeUpdate() == 1;
         }catch(SQLException ex){
@@ -77,13 +79,13 @@ public class DaoCategoria {
     }
 
 
-    public boolean delete(String id){
+    public boolean delete(int id){
         boolean state = false;
         try{
             con = ConnectionMysql.getConnection();
             String query = "delete from categoria where id = ?;";
             pstm = con.prepareStatement(query);
-            pstm.setString(1, id);
+            pstm.setInt(1, id);
             state = pstm.executeUpdate() == 1;
         }catch(SQLException ex){
             ex.printStackTrace();

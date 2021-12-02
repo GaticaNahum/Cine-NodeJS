@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Pelicula {
     @XmlElement
-    private String id;
+    private int id;
     @XmlElement
     private String titulo;
     @XmlElement
@@ -31,7 +31,7 @@ public class Pelicula {
     public Pelicula() {
     }
 
-    public Pelicula(String id, String titulo, String descripcion, String sinopsis, int rating, String fechaRegistro, String fechaUpdate, int estado, int categoria) {
+    public Pelicula(int id, String titulo, String descripcion, String sinopsis, int rating, String fechaRegistro, String fechaUpdate, int estado, int categoria) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -43,15 +43,11 @@ public class Pelicula {
         this.categoria = categoria;
     }
 
-    public Pelicula(String id, String titulo, String descripcion, String sinopsis, String rating, String categoria) {
-    }
-
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -119,19 +115,5 @@ public class Pelicula {
         this.categoria = categoria;
     }
 
-    @Override
-    public String toString() {
-        return "Pelicula{" +
-                "id='" + id + '\'' +
-                ", titulo='" + titulo + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", sinopsis='" + sinopsis + '\'' +
-                ", rating=" + rating +
-                ", fechaRegistro='" + fechaRegistro + '\'' +
-                ", fechaUpdate='" + fechaUpdate + '\'' +
-                ", estado=" + estado +
-                ", categoria=" + categoria +
-                '}';
-    }
 }
 

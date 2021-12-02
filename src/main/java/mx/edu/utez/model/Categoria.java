@@ -9,23 +9,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Categoria {
     @XmlElement
-    private String id;
+    private int id;
     @XmlElement
     private String nombre;
 
     public Categoria() {
     }
 
-    public Categoria(String id, String nombre) {
+    public Categoria(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -37,11 +37,4 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-    @Override
-    public String toString() {
-        return "Categoria{" +
-                "id='" + id + '\'' +
-                ", nombre='" + nombre + '\'' +
-                '}';
-    }
 }

@@ -1,14 +1,12 @@
 package mx.edu.utez.controller;
 
-
-import mx.edu.utez.model.Categoria;
-import mx.edu.utez.model.DaoCategoria;
 import mx.edu.utez.model.DaoPelicula;
 import mx.edu.utez.model.Pelicula;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Path("/pelicula")
@@ -23,7 +21,7 @@ public class ServicePelicula {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Pelicula getPeliculas(@PathParam("id") String id){
+    public Pelicula getPeliculas(@PathParam("id") int id){
         return new DaoPelicula().findById(id);
     }
 
@@ -31,10 +29,10 @@ public class ServicePelicula {
     @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/x-www-form-urlencoded")
-    public Pelicula save(MultivaluedMap<String, String> formParams){
-        String id = formParams.get("id").get(0);
-        if(new DaoPelicula().insertPeli(getParams(id, formParams), true))
-            return new DaoPelicula().findById(id);
+    public String createMovie(MultivaluedMap<String, String> formParams){
+        if(new DaoPelicula().insertPeli(true,getParams(0,formParams),0)){
+            return "Succesful";
+        }
         return null;
     }
 
@@ -42,22 +40,34 @@ public class ServicePelicula {
     @Path("/save/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/x-www-form-urlencoded")
-    public Pelicula save(@PathParam("id") String id, MultivaluedMap<String, String> formParams){
-        if(new DaoPelicula().insertPeli(getParams(id, formParams), false))
+    public Pelicula updateMovie(MultivaluedMap<String, String> formParams, @PathParam("id") int id){
+        if(new DaoPelicula().insertPeli(false,getParams(id,formParams),id)){
             return new DaoPelicula().findById(id);
+        }
         return null;
     }
 
-    private Pelicula getParams(String id, MultivaluedMap<String, String> formParams) {
-        String titulo = formParams.get("titulo").get(0);
-        String descripcion = formParams.get("descripcion").get(0);
-        String sinopsis = formParams.get("sinopsis").get(0);
-        String rating = formParams.get("rating").get(0);
-        String categoria = formParams.get("categoria").get(0);
-
-        Pelicula pelicula = new Pelicula(id,titulo,descripcion, sinopsis, rating, categoria);
-        System.out.println(pelicula);
-        return pelicula;
+    @POST
+    @Path("/delete/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Pelicula> deleteMovie(@PathParam("id") int id){
+        if(new DaoPelicula().deletePeli(id)){
+            return new DaoPelicula().findAll();
+        }
+        return null;
     }
+
+    private Pelicula getParams(int id, MultivaluedMap<String, String> formParams){
+        int rating = Integer.parseInt(formParams.get("rating").get(0));
+        int state = Integer.parseInt(formParams.get("estado").get(0));
+        int categoria = Integer.parseInt(formParams.get("categoria").get(0));
+        String fechaRegistro = String.valueOf(LocalDateTime.now());
+        String fechaUpdate = String.valueOf(LocalDateTime.now());
+        Pelicula movie = new Pelicula(id,formParams.get("titulo").get(0),formParams.get("descripcion").get(0),formParams.get("sinopsis").get(0),rating,fechaRegistro,fechaUpdate,state,categoria);
+        return movie;
+    }
+
+
+
 
 }

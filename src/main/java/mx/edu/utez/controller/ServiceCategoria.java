@@ -20,7 +20,7 @@ public class ServiceCategoria {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Categoria getCategories(@PathParam("id") String id){
+    public Categoria getCategories(@PathParam("id") int id){
         return new DaoCategoria().findById(id);
     } //Listo
 
@@ -28,36 +28,34 @@ public class ServiceCategoria {
     @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/x-www-form-urlencoded")
-    public Categoria save(MultivaluedMap<String, String> formParams){
-        String id = formParams.get("id").get(0);
-        if(new DaoCategoria().insertCategory(getParams(id, formParams), true))
-            return new DaoCategoria().findById(id);
+    public String createCategory(MultivaluedMap<String, String> formParams){
+        if(new DaoCategoria().insertCategory(true,getParams(0,formParams),0)){
+            return "Succesful";
+        }
         return null;
+
     }
 
     @POST
     @Path("/save/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/x-www-form-urlencoded")
-    public Categoria save(@PathParam("id") String id, MultivaluedMap<String, String> formParams){
-        if(new DaoCategoria().insertCategory(getParams(id, formParams), false))
+    public Categoria updateCategory(MultivaluedMap<String, String> formParams, @PathParam("id") int id){
+        if(new DaoCategoria().insertCategory(false,getParams(id,formParams),id)){
             return new DaoCategoria().findById(id);
+        }
         return null;
     }
 
     @DELETE
     @Path("/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean delete(@PathParam("id") String id){
+    public boolean delete(@PathParam("id") int id){
         return new DaoCategoria().delete(id);
     }
 
-    private Categoria getParams(String id, MultivaluedMap<String, String> formParams) {
-        String nombre = formParams.get("nombre").get(0);
-
-
-        Categoria categoria = new Categoria(id,nombre);
-        System.out.println(categoria);
+    private Categoria getParams(int id, MultivaluedMap<String, String> formParams){
+        Categoria categoria = new Categoria(id,formParams.get("nombre").get(0));
         return categoria;
     }
 }

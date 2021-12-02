@@ -16,12 +16,12 @@ public class DaoPelicula {
         List<Pelicula> pelicula = new ArrayList<>();
         try {
             con = ConnectionMysql.getConnection();
-            String query = "SELECT id,titulo,descripcion,sinopsis,rating,fechaRegistro,fechaUpdate as fechaUpdate,estado,categoria FROM pelicula;";
+            String query = "SELECT id,titulo,descripcion,sinopsis,rating,fechaRegistro,fechaUpdate,estado,categoria FROM pelicula;";
             statement = con.createStatement();
             rs = statement.executeQuery(query);
             while (rs.next()) {
                 Pelicula pelicula1 = new Pelicula();
-                pelicula1.setId(rs.getString("id"));
+                pelicula1.setId(rs.getInt("id"));
                 pelicula1.setTitulo(rs.getString("titulo"));
                 pelicula1.setDescripcion(rs.getString("descripcion"));
                 pelicula1.setSinopsis(rs.getString("sinopsis"));
@@ -40,19 +40,22 @@ public class DaoPelicula {
         return pelicula;
     }
 
-    public Pelicula findById(String id) {
+    public Pelicula findById(int id) {
         Pelicula pelicula = new Pelicula();
         try {
             con = ConnectionMysql.getConnection();
-            String query = "SELECT titulo,descripcion,sinopsis,rating,estado,categoria FROM pelicula WHERE id = ?";
+            String query = "SELECT id,titulo,descripcion,sinopsis,rating,fechaRegistro,fechaUpdate,estado,categoria FROM pelicula WHERE id = ?";
             pstm = con.prepareStatement(query);
-            pstm.setString(1, id);
+            pstm.setInt(1, id);
             rs = pstm.executeQuery();
             if (rs.next()) {
+                pelicula.setId(rs.getInt("id"));
                 pelicula.setTitulo(rs.getString("titulo"));
                 pelicula.setDescripcion(rs.getString("descripcion"));
                 pelicula.setSinopsis(rs.getString("sinopsis"));
                 pelicula.setRating(rs.getInt("rating"));
+                pelicula.setFechaRegistro(rs.getString("fechaRegistro"));
+                pelicula.setFechaUpdate(rs.getString("fechaUpdate"));
                 pelicula.setEstado(rs.getInt("estado"));
                 pelicula.setCategoria(rs.getInt("categoria"));
             }
@@ -66,27 +69,33 @@ public class DaoPelicula {
 
 
 
-    public boolean insertPeli(Pelicula pelicula, boolean insert){
+    public boolean insertPeli( boolean insert ,Pelicula pelicula,int id){
         boolean state = false;
         try{
             con = ConnectionMysql.getConnection();
             if(insert){
-                String query = "INSERT INTO pelicula(titulo, descripcion, sinopsis, rating, categoria) values(?,?,?,?,?);";
+                String query = "INSERT INTO pelicula(titulo, descripcion, sinopsis, rating,fechaRegistro,fechaUpdate, estado, categoria) values(?,?,?,?,?,?,?,?);";
                 pstm = con.prepareStatement(query);
                 pstm.setString(1, pelicula.getTitulo());
                 pstm.setString(2, pelicula.getDescripcion());
                 pstm.setString(3, pelicula.getSinopsis());
                 pstm.setInt(4, pelicula.getRating());
-                pstm.setInt(5, pelicula.getCategoria());
+                pstm.setString(5, pelicula.getFechaRegistro());
+                pstm.setString(6, pelicula.getFechaUpdate());
+                pstm.setInt(7, pelicula.getEstado());
+                pstm.setInt(8, pelicula.getCategoria());
             }else{
-                String query = "UPDATE pelicula SET titulo = ?,descripcion = ?, sinopsis = ?, rating = ?, categoria = ? WHERE id = ?;";
+                String query = "UPDATE pelicula SET titulo = ?,descripcion = ?, sinopsis = ?, rating = ?, fechaUpdate = ?, estado = ?  ,categoria = ? WHERE id = ?;";
                 pstm = con.prepareStatement(query);
-                pstm.setString(6, pelicula.getId());
                 pstm.setString(1, pelicula.getTitulo());
                 pstm.setString(2, pelicula.getDescripcion());
                 pstm.setString(3, pelicula.getSinopsis());
                 pstm.setInt(4, pelicula.getRating());
-                pstm.setInt(5, pelicula.getCategoria());
+                pstm.setString(5, pelicula.getFechaUpdate());
+                pstm.setInt(6, pelicula.getEstado());
+                pstm.setInt(7, pelicula.getCategoria());
+                pstm.setInt(8, id);
+
             }
             state = pstm.executeUpdate() == 1;
         }catch(SQLException ex){
@@ -97,13 +106,13 @@ public class DaoPelicula {
         return state;
     }
 
-    public boolean deletePeli(String id){
+    public boolean deletePeli(int id){
         boolean state = false;
         try{
             con = ConnectionMysql.getConnection();
             String query = "delete from pelicula where id = ?;";
             pstm = con.prepareStatement(query);
-            pstm.setString(1, id);
+            pstm.setInt(1, id);
             state = pstm.executeUpdate() == 1;
         }catch(SQLException ex){
             ex.printStackTrace();
@@ -112,6 +121,7 @@ public class DaoPelicula {
         }
         return state;
     }
+
 
 
     public void closeConnection(){
